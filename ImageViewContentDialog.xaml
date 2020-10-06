@@ -1,0 +1,29 @@
+﻿<ContentDialog
+    x:Class="MusicImageGetter.ImageViewContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MusicImageGetter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="专辑图片"
+    CloseButtonText="退出"
+    >
+
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,10" Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="{x:Bind MusicAlbumName,Mode=OneWay}" TextWrapping="WrapWholeWords" Margin="0,0,20,0"/>
+                <TextBlock Text="{x:Bind PixelHeightWidth,Mode=OneWay}"/>
+            </StackPanel>
+            <ScrollViewer ZoomMode="Enabled" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Grid.Row="1">
+                <Image Source="{x:Bind AlbumArt,Mode=OneWay}"/>
+            </ScrollViewer>
+        </Grid>
+    </ScrollViewer>
+</ContentDialog>
