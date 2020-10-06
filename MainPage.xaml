@@ -61,7 +61,7 @@
                     </Button.Content>
                     <Button.Transitions>
                         <TransitionCollection>
-                            <EntranceThemeTransition/>
+                            <RepositionThemeTransition/>
                         </TransitionCollection>
                     </Button.Transitions>
                 </Button>
