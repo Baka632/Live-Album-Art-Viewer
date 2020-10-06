@@ -5,12 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -31,7 +33,7 @@ namespace MusicImageGetter
     {
         public event PropertyChangedEventHandler PropertyChanged;
         BitmapImage Thumbnail = new BitmapImage();
-        StorageItemThumbnail PreviousThumbnail;
+        StorageItemThumbnail BackUpThumbnail;
         StorageFile file;
         MusicProperties musicProperties;
         string albumName = "";
@@ -70,15 +72,19 @@ namespace MusicImageGetter
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
             fileOpenPicker.FileTypeFilter.Add(".mp3");
-            fileOpenPicker.FileTypeFilter.Add(".wav");
             file = await fileOpenPicker.PickSingleFileAsync();
+            FileHandle(file);
+        }
+
+        private async void FileHandle(StorageFile file)
+        {
             if (file != null)
             {
                 saveFile.IsEnabled = true;
                 BitmapImage image = new BitmapImage();
                 musicProperties = await file.Properties.GetMusicPropertiesAsync();
                 await image.SetSourceAsync(await file.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem));
-                PreviousThumbnail = await file.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem);
+                BackUpThumbnail = await file.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem);
                 if (string.IsNullOrWhiteSpace(musicProperties.Album) != true)
                 {
                     MusicAlbumName = $"专辑: {musicProperties.Album}";
@@ -87,8 +93,10 @@ namespace MusicImageGetter
                 {
                     MusicAlbumName = "专辑: 未知专辑";
                 }
-                
-                notifyUserTextBlock.Text = string.Empty;
+                if (notifyUserTextBlock.Text != "目前暂时不支持多个文件拖拽，将只显示第一个文件。")
+                {
+                    notifyUserTextBlock.Text = "";
+                }
                 MusicAlbumArt = image;
                 viewImage.Visibility = Visibility.Visible;
             }
@@ -118,7 +126,7 @@ namespace MusicImageGetter
             if (storageFile != null)
             {
                 CachedFileManager.DeferUpdates(storageFile);
-                var image = file == null ? PreviousThumbnail : await file.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem);
+                var image = file == null ? BackUpThumbnail : await file.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem);
                 var writingStream = await storageFile.OpenStreamForWriteAsync();
                 await image.AsStreamForRead().CopyToAsync(writingStream);
                 FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(storageFile);
@@ -145,7 +153,7 @@ namespace MusicImageGetter
 
         private async void GoToGithub(object sender, RoutedEventArgs e)
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Baka632"));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Baka632/Live-Album-Art-Viewer"));
         }
 
         private async void ViewImage(object sender, RoutedEventArgs e)
@@ -153,6 +161,60 @@ namespace MusicImageGetter
             ImageViewContentDialog contentDialog = new ImageViewContentDialog();
             contentDialog.UpdateImageInfo(MusicAlbumArt, MusicAlbumName);
             await contentDialog.ShowAsync();
+        }
+
+        private async void Grid_Drop(object sender, DragEventArgs e)
+        {
+            var defer = e.GetDeferral();
+            try
+            {
+                DataPackageView dpv = e.DataView;
+                if (dpv.Contains(StandardDataFormats.StorageItems))
+                {
+                    var files = await dpv.GetStorageItemsAsync();
+                    if (files.Count > 1)
+                    {
+                        FileHandle((StorageFile)files.First());
+                        notifyUserTextBlock.Text = "目前暂时不支持多个文件拖拽，将只显示第一个文件。";
+                    }
+                    else if(files.Count == 1)
+                    {
+                        FileHandle((StorageFile)files.First());
+                    }
+                }
+            }
+            finally
+            {
+                defer.Complete();
+            }
+        }
+
+        private async void Grid_DragOver(object sender, DragEventArgs e)
+        {
+            var deferral = e.GetDeferral();
+            DataPackageView dataview = e.DataView;
+            if (dataview.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await dataview.GetStorageItemsAsync();
+                if (items.Count > 0)
+                {
+                    IStorageItem item = items[0];
+                    StorageFile storageFile = item as StorageFile;
+                    if (item.IsOfType(StorageItemTypes.File) && storageFile.ContentType == "audio/mpeg")
+                    {
+                        e.AcceptedOperation = DataPackageOperation.Copy;
+                    }
+                    else
+                    {
+                        e.AcceptedOperation = DataPackageOperation.None;
+                    }
+                }
+            }
+            else
+            {
+                e.AcceptedOperation = DataPackageOperation.None;
+            }
+            deferral.Complete();
         }
     }
 }

@@ -165,6 +165,9 @@
       <Version>2.4.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="PrivacyStatement.md" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
