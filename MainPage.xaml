@@ -25,7 +25,7 @@
     </Page.Resources>
 
     <Grid Background="{StaticResource SystemControlAcrylicWindowBrush}" AllowDrop="True" Drop="Grid_Drop" DragOver="Grid_DragOver">
-        <Image Source="{x:Bind MusicAlbumArt,Mode=OneWay}" CanDrag="True" Opacity="0.2" Stretch="UniformToFill">
+        <Image Source="{x:Bind MusicAlbumArt,Mode=OneWay}" CanDrag="False" Opacity="0.2" Stretch="UniformToFill">
             <Image.Transitions>
                 <TransitionCollection>
                     <EntranceThemeTransition/>
