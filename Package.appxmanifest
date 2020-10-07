@@ -8,14 +8,14 @@
 
   <Identity
     Name="ee22e4fc-842c-487a-8444-9712a94c46c7"
-    Publisher="CN=steve"
+    Publisher="CN=Baka632"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="ee22e4fc-842c-487a-8444-9712a94c46c7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Live Album Art Viewer</DisplayName>
-    <PublisherDisplayName>Steve</PublisherDisplayName>
+    <PublisherDisplayName>Baka632</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
