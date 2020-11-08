@@ -88,7 +88,7 @@
                                 <Image Style="{ThemeResource GithubImage}" Stretch="UniformToFill" Width="19" Height="19"/>
                             </Button>
                         </StackPanel>
-                        <HyperlinkButton Content="隐私声明" NavigateUri="https://github.com/Baka632/Live-Album-Art-Viewer/blob/master/PrivacyStatement.md"/>
+                        <HyperlinkButton Content="隐私声明" NavigateUri="https://github.com/Baka632/LiveStudioPrivacyStatement/blob/main/PrivacyStatement.md"/>
                     </StackPanel>
                 </Flyout>
             </Button.Flyout>
