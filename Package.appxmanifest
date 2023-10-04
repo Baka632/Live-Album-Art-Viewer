@@ -7,7 +7,7 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="ee22e4fc-842c-487a-8444-9712a94c46c7"
+    Name="Baka632.MusicImageGetter"
     Publisher="CN=Baka632"
     Version="1.0.0.0" />
 
